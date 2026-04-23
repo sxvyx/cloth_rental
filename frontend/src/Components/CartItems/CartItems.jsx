@@ -39,7 +39,7 @@ const CartItems = () => {
             return;
         }
 
-        // Logic to place order via API
+        // Step 1: Place the order
         fetch('http://localhost:4000/orders/placeorder', {
             method: 'POST',
             headers: {
@@ -55,11 +55,32 @@ const CartItems = () => {
         .then((response) => response.json())
         .then((data) => {
             if (data.success) {
-                setConfirmMessage(`Rental confirmed! Order ID: ${data.orderId}. Thank you for your order!`);
-                setTimeout(() => {
-                    closeModal();
-                    window.location.reload(); // Refresh to clear cart UI if needed
-                }, 3000);
+                // Step 2: Create payment record for the order
+                fetch('http://localhost:4000/payments/createpayment', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'auth-token': `${localStorage.getItem('auth-token')}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        orderId: data.orderId,
+                        amount: totalAmount,
+                        method: paymentMethod
+                    }),
+                })
+                .then((payRes) => payRes.json())
+                .then((payData) => {
+                    if (payData.success) {
+                        setConfirmMessage(`Rental confirmed! Order ID: ${data.orderId}. Transaction: ${payData.transactionId}. Thank you!`);
+                    } else {
+                        setConfirmMessage(`Order placed! Order ID: ${data.orderId}. Payment pending.`);
+                    }
+                    setTimeout(() => {
+                        closeModal();
+                        window.location.reload();
+                    }, 3000);
+                });
             } else {
                 setPaymentError("Error placing order. Please try again.");
             }
@@ -157,6 +178,7 @@ const CartItems = () => {
                                     <option value="">-- Select --</option>
                                     <option value="UPI">UPI</option>
                                     <option value="Cash on Delivery">Cash on Delivery</option>
+                                    <option value="Card">Card</option>
                                 </select>
                             </label>
                             {paymentError && <p className="error">{paymentError}</p>}
@@ -183,7 +205,4 @@ const CartItems = () => {
 };
 
 export default CartItems;
-  );
-};
 
-export default CartItems;
