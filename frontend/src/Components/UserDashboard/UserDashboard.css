@@ -1,0 +1,27 @@
+/* Basic styling for the user dashboard */
+.user-dashboard {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background: #f4f4f4;
+    padding: 20px;
+  }
+  
+  .dashboard-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .profile, .order-history, .wishlist, .account-settings, .notifications {
+    margin-bottom: 20px;
+  }
+  
+  .profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }
+  
