@@ -7,8 +7,10 @@ const AddProduct = () => {
     const[image, setImage] = useState(false);
     const [productDetails, setProductDetails] = useState({
         name: "",
+        description: "",
         image:"",
         category:"women",
+        sizes: ["S", "M", "L", "XL", "XXL"],
         new_price: "",
         old_price:""
     })
@@ -19,6 +21,15 @@ const AddProduct = () => {
 
     const changeHandler = (e)=>{
         setProductDetails({...productDetails, [e.target.name]:e.target.value})
+    }
+
+    const sizeHandler = (size) => {
+        setProductDetails((prev) => {
+            const sizes = prev.sizes.includes(size)
+                ? prev.sizes.filter(s => s !== size)
+                : [...prev.sizes, size];
+            return { ...prev, sizes };
+        });
     }
 
     const Add_Product = async()=>{
@@ -60,6 +71,12 @@ const AddProduct = () => {
             <p>Product Title</p>
             <input value={productDetails.name} onChange={changeHandler} type="text" name="name" placeholder='Type here' />
         </div>
+
+        <div className="addproduct-itemfield">
+            <p>Product Description</p>
+            <textarea value={productDetails.description} onChange={changeHandler} name="description" placeholder='Write a short description about this cloth...' rows="3" style={{width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', fontFamily: 'inherit', resize: 'vertical'}} />
+        </div>
+
         <div className="addproduct-price">
             <div className="addproduct-itemfield">
                 <p>Price</p>
@@ -79,6 +96,28 @@ const AddProduct = () => {
                 <option value="men">Men</option>
                 <option value="kids">Kids</option>
             </select>
+        </div>
+
+        <div className="addproduct-itemfield">
+            <p>Available Sizes</p>
+            <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
+                {["S", "M", "L", "XL", "XXL"].map((size) => (
+                    <div
+                        key={size}
+                        onClick={() => sizeHandler(size)}
+                        style={{
+                            padding: '8px 16px',
+                            border: productDetails.sizes.includes(size) ? '2px solid #ff4141' : '1px solid #ccc',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            backgroundColor: productDetails.sizes.includes(size) ? '#fff0f0' : '#fff',
+                            fontWeight: productDetails.sizes.includes(size) ? 'bold' : 'normal'
+                        }}
+                    >
+                        {size}
+                    </div>
+                ))}
+            </div>
         </div>
 
         <div className="addproduct-itemfield">
