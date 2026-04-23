@@ -1,0 +1,45 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 60px;
+    box-shadow: 0 1px 3px -2px #000;
+    margin-bottom: 1px;
+    background: white;
+    position: relative;
+}
+
+.nav-logo {
+    width: 200px;
+}
+
+.nav-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+.nav-profile {
+    width: 75px;
+}
+
+@media(max-width: 800px) {
+    .navbar {
+        padding: 15px 30px;
+    }
+
+    .nav-logo {
+        width: 150px;
+    }
+
+    .nav-profile {
+        width: 60px;
+    }
+
+    .nav-title {
+        font-size: 20px;
+    }
+}
