@@ -10,7 +10,9 @@ app.use(express.json());
 app.use(cors());
 
 // Database Connection with MongoDB
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch((err) => console.error("MongoDB connection error:", err.message));
 
 
 // API Creation

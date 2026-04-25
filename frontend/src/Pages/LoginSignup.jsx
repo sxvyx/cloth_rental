@@ -72,7 +72,12 @@ const LoginSignup = () => {
 
     if (responseData.success) {
       localStorage.setItem('auth-token', responseData.token);
-      window.location.replace('/');
+      localStorage.setItem('user-role', responseData.role); // Save role
+      if (responseData.role === 'admin') {
+        window.location.replace('/admin');
+      } else {
+        window.location.replace('/');
+      }
     } else {
       if (responseData.errors === "Please sign up before logging in.") {
         alert("Please sign up before logging in.");
@@ -96,6 +101,7 @@ const LoginSignup = () => {
 
     if (responseData.success) {
       localStorage.setItem('auth-token', responseData.token);
+      localStorage.setItem('user-role', 'user'); // New signups are always users
       window.location.replace('/');
     } else {
       alert(responseData.errors || "Signup failed. Try another email.");

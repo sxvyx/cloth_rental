@@ -33,6 +33,7 @@ Thumbs.db
 
 # Internal checklist/rules
 rule.md
+plan.md
 
 # Test artifacts
 backend/tests/node_modules

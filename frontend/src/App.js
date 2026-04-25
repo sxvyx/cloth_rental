@@ -19,6 +19,8 @@ import OrderHistory from './Components/UserDashboard/OrderHistory';
 import Wishlist from './Components/UserDashboard/Wishlist';
 import AccountSettings from './Components/UserDashboard/AccountSettings';
 import Notifications from './Components/UserDashboard/Notifications';
+import Admin from './Pages/Admin/Admin';
+import ProtectedRoute from './Components/ProtectedRoute';
 
 function App() {
   return (
@@ -50,6 +52,17 @@ function App() {
             <Route path="settings" element={<AccountSettings />} />
             <Route path="notifications" element={<Notifications />} />
           </Route>
+
+          {/* Admin Routes (Protected) */}
+          <Route 
+            path="/admin/*" 
+            element={
+              <ProtectedRoute isAdmin={true}>
+                <Admin />
+              </ProtectedRoute>
+            } 
+          />
+          {/* Internal sub-routes like /admin/addproduct are handled within Admin.jsx */}
           
         </Routes>
         <Footer />

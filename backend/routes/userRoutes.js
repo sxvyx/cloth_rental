@@ -57,7 +57,7 @@ router.post('/login', async (req, res) => {
                 },
             };
             const token = jwt.sign(data, process.env.JWT_SECRET || 'secret_ecom');
-            res.json({ success: true, token });
+            res.json({ success: true, token, role: user.role });
         } else {
             res.json({ success: false, errors: "Wrong password" });
         }
