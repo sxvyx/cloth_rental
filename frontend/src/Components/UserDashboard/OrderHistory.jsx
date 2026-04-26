@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import API_URL from '../../config';
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -7,7 +8,7 @@ const OrderHistory = () => {
   useEffect(() => {
     const token = localStorage.getItem('auth-token');
     if (token) {
-      fetch('http://localhost:4000/orders/myorders', {
+      fetch(`${API_URL}/orders/myorders`, {
         method: 'GET',
         headers: {
           'auth-token': token,

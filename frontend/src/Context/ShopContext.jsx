@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
+import API_URL from "../config";
 
 export const ShopContext = createContext(null);
 
@@ -6,7 +7,7 @@ const ShopContextProvider = (props) => {
     const [all_product, setAll_Product] = useState([]);
     const [cartItems, setCartItems] = useState([]); // Now an array of objects
 
-    const API_BASE_URL = "http://localhost:4000"; // Updated to match backend port
+    const API_BASE_URL = API_URL;
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/products/allproducts`)

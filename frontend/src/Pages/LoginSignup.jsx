@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './CSS/LoginSignup.css';
+import API_URL from '../config';
 
 const LoginSignup = () => {
   const [state, setState] = useState("Login");
@@ -36,7 +37,7 @@ const LoginSignup = () => {
     console.log("Login function called with:", formData.email);
     try {
       let responseData;
-      await fetch('http://localhost:4000/users/login', {
+      await fetch(`${API_URL}/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -65,7 +66,7 @@ const LoginSignup = () => {
 
   const signup = async () => {
     let responseData;
-    await fetch('http://localhost:4000/users/signup', {
+    await fetch(`${API_URL}/users/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
