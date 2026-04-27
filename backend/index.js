@@ -9,7 +9,7 @@ require('dotenv').config();
 app.use(express.json());
 app.use(cors());
 
-// Database Connection with MongoDB
+// Database Connection with MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err.message));
@@ -29,7 +29,7 @@ const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 
-// Use Routes
+// Use Routes - POST REQ
 app.use('/products', productRoutes);
 app.use('/users', userRoutes);
 app.use('/orders', orderRoutes);
