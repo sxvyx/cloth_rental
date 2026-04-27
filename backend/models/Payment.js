@@ -22,7 +22,7 @@ const PaymentSchema = new mongoose.Schema({
     },
     method: {
         type: String,
-        enum: ["UPI", "Cash on Delivery", "Card"],
+        enum: ["UPI", "Cash on Delivery", "Card", "Razorpay"],
         required: true,
     },
     status: {
