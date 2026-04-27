@@ -7,15 +7,13 @@ const ShopContextProvider = (props) => {
     const [all_product, setAll_Product] = useState([]);
     const [cartItems, setCartItems] = useState([]); // Now an array of objects
 
-    const API_BASE_URL = API_URL;
-
     useEffect(() => {
-        fetch(`${API_BASE_URL}/products/allproducts`)
+        fetch(`${API_URL}/products/allproducts`)
             .then((response) => response.json())
             .then((data) => setAll_Product(data));
 
         if (localStorage.getItem('auth-token')) {
-            fetch(`${API_BASE_URL}/users/getcart`, {
+            fetch(`${API_URL}/users/getcart`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -45,7 +43,7 @@ const ShopContextProvider = (props) => {
         });
 
         if (localStorage.getItem('auth-token')) {
-            fetch(`${API_BASE_URL}/users/addtocart`, {
+            fetch(`${API_URL}/users/addtocart`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -66,7 +64,7 @@ const ShopContextProvider = (props) => {
         });
 
         if (localStorage.getItem('auth-token')) {
-            fetch(`${API_BASE_URL}/users/removefromcart`, {
+            fetch(`${API_URL}/users/removefromcart`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
