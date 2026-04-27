@@ -40,6 +40,11 @@ const CartItems = () => {
             return;
         }
 
+        if (paymentMethod === 'Razorpay') {
+            handleRazorpayPayment();
+            return;
+        }
+
         // Step 1: Place the order
         fetch(`${API_URL}/orders/placeorder`, {
             method: 'POST',
@@ -86,6 +91,111 @@ const CartItems = () => {
                 setPaymentError("Error placing order. Please try again.");
             }
         });
+    };
+
+    const handleRazorpayPayment = async () => {
+        try {
+            // Place order first to get local orderId
+            const orderRes = await fetch(`${API_URL}/orders/placeorder`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'auth-token': `${localStorage.getItem('auth-token')}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    products: cartItems,
+                    totalAmount: totalAmount
+                }),
+            });
+            const orderData = await orderRes.json();
+            
+            if (!orderData.success) {
+                setPaymentError("Error placing order. Please try again.");
+                return;
+            }
+
+            // Create Razorpay order
+            const rzpOrderRes = await fetch(`${API_URL}/payments/create-order`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'auth-token': `${localStorage.getItem('auth-token')}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: totalAmount * 100, // minimum amount is 100 paise, multiplied by 100 to convert to paise
+                    currency: "INR",
+                    receipt: `receipt_${orderData.orderId}`
+                }),
+            });
+            const rzpOrderData = await rzpOrderRes.json();
+
+            if (!rzpOrderData.success) {
+                setPaymentError("Error initiating Razorpay payment.");
+                return;
+            }
+
+            const options = {
+                key: process.env.REACT_APP_RAZORPAY_KEY_ID, 
+                amount: rzpOrderData.amount,
+                currency: rzpOrderData.currency,
+                name: "Cloth Rental Ecommerce",
+                description: "Order Payment",
+                order_id: rzpOrderData.order_id,
+                handler: async function (response) {
+                    // Verify Signature
+                    const verifyRes = await fetch(`${API_URL}/payments/verify-payment`, {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'auth-token': `${localStorage.getItem('auth-token')}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                            orderId: orderData.orderId
+                        }),
+                    });
+                    const verifyData = await verifyRes.json();
+                    
+                    if (verifyData.success) {
+                        setConfirmMessage(`Payment verified! Order ID: ${orderData.orderId}. Thank you!`);
+                        setTimeout(() => {
+                            closeModal();
+                            window.location.reload();
+                        }, 3000);
+                    } else {
+                        setPaymentError("Payment verification failed.");
+                    }
+                },
+                prefill: {
+                    name: "Customer",
+                    email: "customer@example.com",
+                    contact: "9999999999"
+                },
+                theme: {
+                    color: "#3399cc"
+                },
+                modal: {
+                    ondismiss: function() {
+                        setPaymentError("Payment cancelled by user.");
+                    }
+                }
+            };
+
+            const rzp1 = new window.Razorpay(options);
+            rzp1.on('payment.failed', function (response){
+                setPaymentError(response.error.description || "Payment failed");
+            });
+            rzp1.open();
+
+        } catch (error) {
+            console.error("Payment error:", error);
+            setPaymentError("An error occurred during payment.");
+        }
     };
 
     return (
@@ -180,6 +290,7 @@ const CartItems = () => {
                                     <option value="UPI">UPI</option>
                                     <option value="Cash on Delivery">Cash on Delivery</option>
                                     <option value="Card">Card</option>
+                                    <option value="Razorpay">Razorpay</option>
                                 </select>
                             </label>
                             {paymentError && <p className="error">{paymentError}</p>}
