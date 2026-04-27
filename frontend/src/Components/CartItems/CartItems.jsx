@@ -137,7 +137,7 @@ const CartItems = () => {
             }
 
             const options = {
-                key: process.env.REACT_APP_RAZORPAY_KEY_ID, 
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
                 amount: rzpOrderData.amount,
                 currency: rzpOrderData.currency,
                 name: "Cloth Rental Ecommerce",
