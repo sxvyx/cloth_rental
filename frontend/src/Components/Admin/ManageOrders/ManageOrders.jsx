@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import './ManageOrders.css'
+import API_URL from '../../../config';
 
 const ManageOrders = () => {
     const [allOrders, setAllOrders] = useState([]);
 
     const fetchOrders = async () => {
-        await fetch('http://localhost:4000/orders/allorders')
+        await fetch(`${API_URL}/orders/allorders`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.success) setAllOrders(data.orders);
@@ -17,7 +18,7 @@ const ManageOrders = () => {
     }, [])
 
     const updateStatus = async (orderId, status) => {
-        await fetch('http://localhost:4000/orders/updateorderstatus', {
+        await fetch(`${API_URL}/orders/updateorderstatus`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',

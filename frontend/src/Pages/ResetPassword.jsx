@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './CSS/ResetPassword.css';
+import API_URL from '../config';
 
 const ResetPassword = () => {
   const [email, setEmail] = useState('');
@@ -34,7 +35,7 @@ const ResetPassword = () => {
     console.log("New Password:", newPassword);
 
     try {
-      const response = await fetch('http://localhost:4000/reset-password', {
+      const response = await fetch(`${API_URL}/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

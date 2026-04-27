@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import './CartItems.css';
 import { ShopContext } from '../../Context/ShopContext';
 import remove_icon from '../Assets/cart_cross_icon.png';
+import API_URL from '../../config';
 
 const CartItems = () => {
     const {
@@ -40,7 +41,7 @@ const CartItems = () => {
         }
 
         // Step 1: Place the order
-        fetch('http://localhost:4000/orders/placeorder', {
+        fetch(`${API_URL}/orders/placeorder`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -56,7 +57,7 @@ const CartItems = () => {
         .then((data) => {
             if (data.success) {
                 // Step 2: Create payment record for the order
-                fetch('http://localhost:4000/payments/createpayment', {
+                fetch(`${API_URL}/payments/createpayment`, {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
