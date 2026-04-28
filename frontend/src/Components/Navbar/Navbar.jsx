@@ -1,55 +1,78 @@
-import React, { useContext, useRef, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import './Navbar.css'
-import logo from '../Assets/logo.png'
-import cart_icon from '../Assets/cart_icon.png'
-import { ShopContext } from '../../Context/ShopContext';
-import nav_dropdown from '../Assets/nav_dropdown.png'
 
 const Navbar = () => {
+  const userRole = localStorage.getItem('user-role');
+  const isAdmin = userRole === 'admin';
 
-  const [menu, setMenu] = useState("shop");
-  const {getTotalCartItems} = useContext(ShopContext);
-  const menuRef = useRef();
-  const role = localStorage.getItem('user-role');
-
-  const dropdown_toggle = (e)=>{
-    menuRef.current.classList.toggle('nav-menu-visible');
-    e.target.classList.toggle('open');
-  }
+  const handleLogout = () => {
+    localStorage.removeItem('auth-token');
+    localStorage.removeItem('user-role');
+    window.location.replace('/');
+  };
 
   return (
-    <div className='navbar'>
-        <div className='nav-logo'>
-          <img src={logo} alt="" />
+    <header className="header">
+      <div className="header__container">
+        <Link 
+          to={isAdmin ? "/admin" : (localStorage.getItem('auth-token') ? "/dashboard/profile" : "/")} 
+          className="header__logo"
+        >
+          <img src="/img/logo.png" alt="Rentie Logo" style={{ height: '50px', width: 'auto', objectFit: 'contain' }} />
+        </Link>
+        <div className="header__menu menu">
+          <nav className="menu__body">
+            <ul className="menu__list">
+              {isAdmin ? (
+                <>
+                  <li className="menu__item"><Link to="/admin" className="menu__link">DASHBOARD</Link></li>
+                  <li className="menu__item"><Link to="/admin/addproduct" className="menu__link">ADD PRODUCT</Link></li>
+                  <li className="menu__item"><Link to="/admin/listproduct" className="menu__link">PRODUCT LIST</Link></li>
+                  <li className="menu__item"><Link to="/admin/manageorders" className="menu__link">ORDERS</Link></li>
+                  <li className="menu__item"><Link to="/admin/users" className="menu__link">USERS</Link></li>
+                </>
+              ) : (
+                <>
+                  <li className="menu__item"><Link to="/womens" className="menu__link">WOMEN</Link></li>
+                  <li className="menu__item"><Link to="/mens" className="menu__link">MEN</Link></li>
+                  <li className="menu__item"><Link to="/kids" className="menu__link">KIDS</Link></li>
+                  <li className="menu__item"><Link to="/" className="menu__link">SALE</Link></li>
+                  <li className="menu__item"><Link to="/how-to-rent" className="menu__link">BLOG</Link></li>
+                </>
+              )}
+            </ul>
+          </nav>
         </div>
-        <img className='nav-dropdown' onClick = {dropdown_toggle} src={nav_dropdown} alt="" />
-        <ul ref={menuRef} className="nav-menu">
-          {role === 'admin' ? (
-            <li onClick={() => {setMenu("admin")}}><Link style={{textDecoration: 'none'}} to='/admin'>Admin Panel</Link> {menu==="admin"?<hr/>:<></>}</li>
-          ) : (
-            <>
-              <li onClick={() => {setMenu("shop")}}><Link style={{textDecoration: 'none'}} to='/'>Shop</Link> {menu==="shop"?<hr/>:<></>}</li>
-              <li onClick={() => {setMenu("mens")}}><Link style={{textDecoration: 'none'}} to='/mens'>Men </Link>  {menu==="mens"?<hr/>:<></>}</li>
-              <li onClick={() => {setMenu("womens")}}><Link style={{textDecoration: 'none'}} to='/womens'>Women </Link> {menu==="womens"?<hr/>:<></>}</li>
-              <li onClick={() => {setMenu("kids")}}><Link style={{textDecoration: 'none'}} to='/kids'>Kids </Link> {menu==="kids"?<hr/>:<></>}</li>
-            </>
-          )}
-        </ul>
-        <div className='nav-login-cart'>
-          {localStorage.getItem('auth-token')
-          ?<button onClick={()=>{localStorage.removeItem('auth-token'); localStorage.removeItem('user-role'); window.location.replace('/')}}>Logout</button>
-          :<Link to='/login'><button>Login</button></Link>}
-          
-          {role !== 'admin' && (
-            <>
-              <Link to='/cart'><img src={cart_icon} alt="" /></Link>
-              <div className="nav-cart-counter">{getTotalCartItems()}</div>
-            </>
-          )}
+        <div className="header__actions action-header">
+          <div className="action-header__link-ico link-ico">
+            
+            {localStorage.getItem('auth-token') ? (
+              <button 
+                onClick={handleLogout} 
+                className="logout-btn"
+              >
+                LOGOUT
+              </button>
+            ) : (
+              <Link className="link-ico__item" to="/login"><img src="/img/icons/profile.svg" alt="profile" /></Link>
+            )}
+            
+            {!isAdmin && (
+              <>
+                <Link className="link-ico__item" to="/"><img src="/img/icons/like.svg" alt="like" /></Link>
+                <Link className="link-ico__item" to="/cart"><img src="/img/icons/shop.svg" alt="shop" /></Link>
+              </>
+            )}
+          </div>
+          <button type="button" className="menu__icon icon-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
-    </div>
-  )
-}
+      </div>
+    </header>
+  );
+};
 
-export default Navbar
+export default Navbar;
