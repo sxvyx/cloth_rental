@@ -1,6 +1,4 @@
 import React, {useEffect, useState}from 'react'
-import './NewCollections.css'
-
 import Item from '../Item/Item'
 import API_URL from '../../config';
 
@@ -15,15 +13,29 @@ const NewCollections = () => {
   }, [])
 
   return (
-    <div className='new-collections'>
-        <h1>NEW COLLECTIONS</h1>
-        <hr />
-        <div className='collections'>
-            {new_collection.map((item, i)=>{
-                return <Item key={i} id={item.id} name={item.name} image={item.image} new_price={item.new_price} old_price={item.old_price}/>
-            })}
+    <section className="feature-product">
+      <div className="feature-product__container">
+        <div className="feature-product__body">
+          <div className="feature-product__header-block header-block">
+            <h4 className="feature-product__title header-block__title">
+              NEW COLLECTIONS
+            </h4>
+          </div>
         </div>
-    </div>
+        <div className="feature-product__cards card">
+          {new_collection.map((item, i) => (
+            <Item
+              key={i}
+              id={item.id}
+              name={item.name}
+              image={item.image}
+              new_price={item.new_price}
+              old_price={item.old_price}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
