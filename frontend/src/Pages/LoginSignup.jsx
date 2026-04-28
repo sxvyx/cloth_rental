@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './CSS/LoginSignup.css';
 import API_URL from '../config';
 
 const LoginSignup = () => {
@@ -84,78 +83,91 @@ const LoginSignup = () => {
   };
 
   return (
-    <div className='loginsignup'>
-      <div className="loginsignup-container">
-        <h1>{state}</h1>
-        <div className="loginsignup-fields">
+    <section className="feature" style={{ padding: '100px 0', minHeight: '60vh' }}>
+      <div className="feature__container" style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}>
+        <h1 className="header-block__title" style={{ marginBottom: '30px', textTransform: 'uppercase' }}>{state}</h1>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {state === "Sign Up" && (
             <input
-              name='username'
+              name="username"
               value={formData.username}
               onChange={changeHandler}
               type="text"
-              placeholder='Your Name'
+              placeholder="Your Name"
+              className="input"
               required
               minLength={3}
             />
           )}
 
           <input
-            name='email'
+            name="email"
             value={formData.email}
             onChange={changeHandler}
             type="email"
-            placeholder='Your Email'
+            placeholder="Your Email"
+            className="input"
             required
           />
 
-          <div className="password-input">
+          <div style={{ position: 'relative' }}>
             <input
-              name='password'
+              name="password"
               value={formData.password}
               onChange={changeHandler}
               type={showPassword ? "text" : "password"}
-              placeholder='Password'
+              placeholder="Password"
+              className="input"
               required
             />
-            <span className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+            <span 
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', fontSize: '20px' }}
+            >
               {showPassword ? "👁️" : "👁️‍🗨️"}
             </span>
           </div>
+
+          <button 
+            className="button"
+            style={{ width: '100%', marginTop: '10px' }}
+            onClick={() => {
+              if (isValidForm()) {
+                state === "Login" ? login() : signup();
+              }
+            }}
+          >
+            Continue
+          </button>
         </div>
 
-        <button onClick={() => {
-          if (isValidForm()) {
-            state === "Login" ? login() : signup();
-          }
-        }}>
-          Continue
-        </button>
+        <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
+          {state === "Sign Up" ? (
+            <p>
+              Already have an account?{' '}
+              <span style={{ color: '#000', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setState("Login")}>Login here</span>
+            </p>
+          ) : (
+            <p>
+              Create an account?{' '}
+              <span style={{ color: '#000', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setState("Sign Up")}>Click here</span>
+            </p>
+          )}
 
-        {state === "Sign Up" ? (
-          <p className="loginsignup-login">
-            Already have an account?
-            <span onClick={() => setState("Login")}> Login here</span>
-          </p>
-        ) : (
-          <p className="loginsignup-login">
-            Create an account?
-            <span onClick={() => setState("Sign Up")}> Click here</span>
-          </p>
-        )}
+          {state === "Login" && (
+            <p style={{ marginTop: '10px' }}>
+              <span style={{ color: '#000', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => window.location.href = "/reset-password"}>Forgot password?</span>
+            </p>
+          )}
 
-        {state === "Login" && (
-          <p className="password-reset-link">
-            <span onClick={() => window.location.href = "/reset-password"}>Forgot password?</span>
-          </p>
-        )}
-
-        <div className="loginsignup-agree">
-          <input type="checkbox" required />
-          <p>By continuing, I agree to the terms of use and privacy policy</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '30px' }}>
+            <input type="checkbox" required />
+            <p style={{ margin: 0 }}>By continuing, I agree to the terms of use and privacy policy</p>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

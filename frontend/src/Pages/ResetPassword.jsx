@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import './CSS/ResetPassword.css';
 import API_URL from '../config';
 
 const ResetPassword = () => {
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(""); // Track error message
+  const [error, setError] = useState("");
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -31,9 +30,6 @@ const ResetPassword = () => {
       return;
     }
 
-    console.log("Email:", email);
-    console.log("New Password:", newPassword);
-
     try {
       const response = await fetch(`${API_URL}/reset-password`, {
         method: 'POST',
@@ -52,39 +48,54 @@ const ResetPassword = () => {
         alert(data.message || "Password reset failed.");
       }
     } catch (error) {
-      console.error("Error in reset request:", error); // Log any errors
+      console.error("Error in reset request:", error);
       setError("Something went wrong. Please try again.");
     }
   };
 
   return (
-    <div className='reset-password'>
-      <div className='reset-password-container'>
-        <h2>Reset Password</h2>
-        {error && <div className="error-message">{error}</div>}
-        <input
-          type='email'
-          placeholder='Enter your registered email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <div className='password-input-wrapper'>
+    <section className="feature" style={{ padding: '100px 0', minHeight: '60vh' }}>
+      <div className="feature__container" style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}>
+        <h2 className="header-block__title" style={{ marginBottom: '30px', textTransform: 'uppercase' }}>Reset Password</h2>
+        {error && <div style={{ color: 'red', marginBottom: '15px' }}>{error}</div>}
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <input
-            type={showPassword ? "text" : "password"}
-            placeholder='Enter new password'
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            type="email"
+            placeholder="Enter your registered email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="input"
+            required
           />
-          <span
-            className="eye-icon"
-            onClick={() => setShowPassword(!showPassword)}
+          
+          <div style={{ position: 'relative' }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter new password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="input"
+              required
+            />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', fontSize: '20px' }}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </span>
+          </div>
+          
+          <button 
+            className="button"
+            style={{ width: '100%', marginTop: '10px' }}
+            onClick={handleReset}
           >
-            {showPassword ? "🙈" : "👁️"}
-          </span>
+            Reset Password
+          </button>
         </div>
-        <button onClick={handleReset}>Reset Password</button>
       </div>
-    </div>
+    </section>
   );
 };
 

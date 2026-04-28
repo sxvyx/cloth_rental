@@ -45,7 +45,6 @@ const CartItems = () => {
             return;
         }
 
-        // Step 1: Place the order
         fetch(`${API_URL}/orders/placeorder`, {
             method: 'POST',
             headers: {
@@ -61,7 +60,6 @@ const CartItems = () => {
         .then((response) => response.json())
         .then((data) => {
             if (data.success) {
-                // Step 2: Create payment record for the order
                 fetch(`${API_URL}/payments/createpayment`, {
                     method: 'POST',
                     headers: {
@@ -95,7 +93,6 @@ const CartItems = () => {
 
     const handleRazorpayPayment = async () => {
         try {
-            // Place order first to get local orderId
             const orderRes = await fetch(`${API_URL}/orders/placeorder`, {
                 method: 'POST',
                 headers: {
@@ -115,7 +112,6 @@ const CartItems = () => {
                 return;
             }
 
-            // Create Razorpay order
             const rzpOrderRes = await fetch(`${API_URL}/payments/create-order`, {
                 method: 'POST',
                 headers: {
@@ -124,7 +120,7 @@ const CartItems = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    amount: totalAmount * 100, // minimum amount is 100 paise, multiplied by 100 to convert to paise
+                    amount: totalAmount * 100,
                     currency: "INR",
                     receipt: `receipt_${orderData.orderId}`
                 }),
@@ -140,11 +136,10 @@ const CartItems = () => {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
                 amount: rzpOrderData.amount,
                 currency: rzpOrderData.currency,
-                name: "Cloth Rental Ecommerce",
-                description: "Order Payment",
+                name: "Rentie",
+                description: "Rental Booking Payment",
                 order_id: rzpOrderData.order_id,
                 handler: async function (response) {
-                    // Verify Signature
                     const verifyRes = await fetch(`${API_URL}/payments/verify-payment`, {
                         method: 'POST',
                         headers: {
@@ -177,7 +172,7 @@ const CartItems = () => {
                     contact: "9999999999"
                 },
                 theme: {
-                    color: "#3399cc"
+                    color: "#9e1b20"
                 },
                 modal: {
                     ondismiss: function() {
@@ -199,122 +194,159 @@ const CartItems = () => {
     };
 
     return (
-        <div className='cartitems'>
-            <div className="cartitems-format-main">
-                <p>Products</p>
-                <p>Title</p>
-                <p>Price/Day</p>
-                <p>Dates</p>
-                <p>Total</p>
-                <p>Remove</p>
+        <div className='cart-container'>
+            <div className="cart-header">
+                <h1>Your Shopping Bag</h1>
+                <p>Manage your rental selections and proceed to checkout.</p>
             </div>
-            <hr />
 
-            {Array.isArray(cartItems) && cartItems.map((item, index) => {
-                const product = all_product.find((p) => p.id === Number(item.productId));
-                if (!product) return null;
-                
-                const days = (item.startDate && item.endDate) 
-                    ? Math.max(1, Math.ceil((new Date(item.endDate) - new Date(item.startDate)) / (1000 * 60 * 60 * 24)))
-                    : 1;
+            <div className="cart-content">
+                <div className="cart-items-section">
+                    <div className="cart-items-list">
+                        {Array.isArray(cartItems) && cartItems.length > 0 ? (
+                            cartItems.map((item, index) => {
+                                const product = all_product.find((p) => p.id === Number(item.productId));
+                                if (!product) return null;
+                                
+                                const days = (item.startDate && item.endDate) 
+                                    ? Math.max(1, Math.ceil((new Date(item.endDate) - new Date(item.startDate)) / (1000 * 60 * 60 * 24)))
+                                    : 1;
 
-                return (
-                    <div key={index}>
-                        <div className="cartitems-format cartitems-format-main">
-                            <img src={product.image} alt="" className='carticon-product-icon' />
-                            <p className="cart-item-name">{product.name}</p>
-                            <p>Rs. {product.new_price}</p>
-                            <p className="cart-item-dates">
-                                {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
-                                <br/>({days} days)
-                            </p>
-                            <p>Rs. {product.new_price * days * item.quantity}</p>
-                            <img
-                                className='cartitems-remove-icon'
-                                src={remove_icon}
-                                onClick={() => removeFromCart(item.productId)}
-                                alt=""
-                            />
-                        </div>
-                        <hr />
-                    </div>
-                );
-            })}
-
-            <div className="cartitems-down">
-                <div className="cartitems-total">
-                    <h1>Cart Totals</h1>
-                    <div>
-                        <div className="cartitems-total-item">
-                            <p>Sub-total</p>
-                            <p>Rs. {totalAmount}</p>
-                        </div>
-                        <hr />
-                        <div className="cartitems-total-item">
-                            <p>Shipping fee</p>
-                            <p>Free</p>
-                        </div>
-                        <hr />
-                        <div className="cartitems-total-item">
-                            <h3>Total</h3>
-                            <h3>Rs. {totalAmount}</h3>
-                        </div>
-                    </div>
-                    <button onClick={handleCheckout}>
-                        PROCEED TO CHECKOUT
-                    </button>
-                </div>
-
-                {/* Checkout Modal */}
-                {isModalOpen && (
-                    <div className="checkout-modal">
-                        <div className="checkout-modal-content">
-                            <h2>Checkout Summary</h2>
-                            <div className="modal-scroll-area">
-                                {Array.isArray(cartItems) && cartItems.map((item, idx) => {
-                                    const p = all_product.find((product) => product.id === Number(item.productId));
-                                    return (
-                                        <div key={idx} className="modal-item">
-                                            <p>{p ? p.name : "Item"} ({item.quantity})</p>
-                                            <p>{new Date(item.startDate).toLocaleDateString()} to {new Date(item.endDate).toLocaleDateString()}</p>
+                                return (
+                                    <div key={index} className="cart-item-card">
+                                        <div className="cart-item-image">
+                                            <img src={product.image} alt={product.name} />
                                         </div>
-                                    );
-                                })}
+                                        <div className="cart-item-details">
+                                            <div className="cart-item-main-info">
+                                                <h3 className="cart-item-title">{product.name}</h3>
+                                                <p className="cart-item-price">Rs. {product.new_price} <span>/ day</span></p>
+                                            </div>
+                                            <div className="cart-item-rent-info">
+                                                <div className="rent-badge">
+                                                    <span className="badge-icon">📅</span>
+                                                    <span className="badge-text">{new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}</span>
+                                                </div>
+                                                <div className="duration-badge">
+                                                    {days} {days === 1 ? 'Day' : 'Days'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="cart-item-total">
+                                            <p className="total-label">Total</p>
+                                            <p className="total-value">Rs. {product.new_price * days * item.quantity}</p>
+                                        </div>
+                                        <button className='cart-remove-btn' onClick={() => removeFromCart(item.productId)}>
+                                            <img src={remove_icon} alt="Remove" />
+                                        </button>
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <div className="empty-cart-message">
+                                <h3>Your bag is empty</h3>
+                                <p>Looks like you haven't added anything to your rental bag yet.</p>
+                                <button className="start-shopping-btn" onClick={() => window.location.replace('/')}>Start Shopping</button>
                             </div>
-                            <h3>Total Payable: Rs. {totalAmount}</h3>
+                        )}
+                    </div>
+                </div>
 
-                            <label>
-                                Select Payment Method:
-                                <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
-                                    <option value="">-- Select --</option>
-                                    <option value="UPI">UPI</option>
-                                    <option value="Cash on Delivery">Cash on Delivery</option>
-                                    <option value="Card">Card</option>
-                                    <option value="Razorpay">Razorpay</option>
-                                </select>
-                            </label>
-                            {paymentError && <p className="error">{paymentError}</p>}
-                            {confirmMessage && <p className="success">{confirmMessage}</p>}
-
-                            <div className="modal-buttons">
-                                <button onClick={closeModal} className="cancel-btn">Cancel</button>
-                                <button onClick={confirmPurchase} className="confirm-btn">Confirm Rental</button>
+                <div className="cart-summary-section">
+                    <div className="summary-card">
+                        <h2>Order Summary</h2>
+                        <div className="summary-details">
+                            <div className="summary-row">
+                                <span>Sub-total</span>
+                                <span>Rs. {totalAmount}</span>
+                            </div>
+                            <div className="summary-row">
+                                <span>Shipping Fee</span>
+                                <span className="free-shipping">FREE</span>
+                            </div>
+                            <div className="promo-input-row">
+                                <input type="text" placeholder="Promo Code" />
+                                <button>Apply</button>
+                            </div>
+                            <div className="summary-divider"></div>
+                            <div className="summary-row total-row">
+                                <span>Total Amount</span>
+                                <span className="final-total">Rs. {totalAmount}</span>
                             </div>
                         </div>
-                    </div>
-                )}
-
-                <div className="cartitems-promocode">
-                    <p>If you have a promo code, Enter it here</p>
-                    <div className="cartitems-promobox">
-                        <input type="text" placeholder='promo code' />
-                        <button>Submit</button>
+                        <button className="checkout-btn" onClick={handleCheckout}>
+                            Proceed to Checkout
+                        </button>
+                        <div className="security-notice">
+                            <span className="shield-icon">🛡️</span>
+                            <span>Secure checkout powered by Razorpay</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {/* Checkout Modal */}
+            {isModalOpen && (
+                <div className="modal-overlay">
+                    <div className="premium-modal">
+                        <div className="modal-header">
+                            <h2>Checkout Details</h2>
+                            <button className="modal-close" onClick={closeModal}>&times;</button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="checkout-summary-mini">
+                                <h3>Order Details</h3>
+                                <div className="mini-items-list">
+                                    {Array.isArray(cartItems) && cartItems.map((item, idx) => {
+                                        const p = all_product.find((product) => product.id === Number(item.productId));
+                                        return (
+                                            <div key={idx} className="mini-item">
+                                                <span>{p ? p.name : "Item"}</span>
+                                                <span>Rs. {p ? p.new_price : 0}</span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <div className="mini-total">
+                                    <span>Total Payable</span>
+                                    <span>Rs. {totalAmount}</span>
+                                </div>
+                            </div>
+
+                            <div className="payment-selection">
+                                <h3>Select Payment Method</h3>
+                                <div className="payment-options">
+                                    <label className={`payment-option ${paymentMethod === 'Razorpay' ? 'active' : ''}`}>
+                                        <input type="radio" name="payment" value="Razorpay" onChange={(e) => setPaymentMethod(e.target.value)} />
+                                        <span className="option-content">
+                                            <span className="option-name">Online / UPI / Card</span>
+                                            <span className="option-desc">Powered by Razorpay</span>
+                                        </span>
+                                    </label>
+                                    <label className={`payment-option ${paymentMethod === 'Cash on Delivery' ? 'active' : ''}`}>
+                                        <input type="radio" name="payment" value="Cash on Delivery" onChange={(e) => setPaymentMethod(e.target.value)} />
+                                        <span className="option-content">
+                                            <span className="option-name">Cash on Delivery</span>
+                                            <span className="option-desc">Pay when you receive</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {paymentError && <div className="modal-error">{paymentError}</div>}
+                            {confirmMessage && <div className="modal-success">{confirmMessage}</div>}
+                        </div>
+                        <div className="modal-footer">
+                            <button className="secondary-btn" onClick={closeModal}>Cancel</button>
+                            <button className="primary-btn" onClick={confirmPurchase}>Confirm Rental</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
 export default CartItems;
+
 
