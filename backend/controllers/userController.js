@@ -121,4 +121,14 @@ const getCart = async (req, res) => {
     res.json(userData.cartData);
 };
 
-module.exports = { signup, login, addToCart, removeFromCart, getCart };
+// GET /users/allusers
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({}).select('-password');
+        res.json({ success: true, users });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+module.exports = { signup, login, addToCart, removeFromCart, getCart, getAllUsers };

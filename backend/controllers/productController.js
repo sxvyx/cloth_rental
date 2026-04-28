@@ -19,6 +19,8 @@ const addProduct = async (req, res) => {
         new_price: req.body.new_price,
         old_price: req.body.old_price,
         pricePerDay: req.body.pricePerDay || 0,
+        stock: req.body.stock || 1,
+        description: req.body.description || "",
     });
     console.log(product);
     await product.save();
@@ -62,4 +64,23 @@ const popularInWomen = async (req, res) => {
     res.send(popularinwomen);
 };
 
-module.exports = { addProduct, removeProduct, getAllProducts, newCollection, popularInWomen };
+// POST /products/updateproduct
+const updateProduct = async (req, res) => {
+    try {
+        const { id, name, category, new_price, old_price, stock, description, available } = req.body;
+        await Product.findOneAndUpdate({ id: id }, {
+            name,
+            category,
+            new_price,
+            old_price,
+            stock,
+            description,
+            available
+        });
+        res.json({ success: true, message: "Product updated successfully" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error updating product" });
+    }
+};
+
+module.exports = { addProduct, removeProduct, getAllProducts, newCollection, popularInWomen, updateProduct };

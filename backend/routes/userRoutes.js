@@ -6,7 +6,8 @@ const {
     login,
     addToCart,
     removeFromCart,
-    getCart
+    getCart,
+    getAllUsers
 } = require('../controllers/userController');
 
 // Endpoint for registering the user
@@ -23,5 +24,8 @@ router.post('/removefromcart', fetchUser, removeFromCart);
 
 // Endpoint to get cart data
 router.post('/getcart', fetchUser, getCart);
+
+// Endpoint to get all users (Admin only)
+router.get('/allusers', getAllUsers);
 
 module.exports = router;

@@ -5,7 +5,8 @@ const {
     removeProduct,
     getAllProducts,
     newCollection,
-    popularInWomen
+    popularInWomen,
+    updateProduct
 } = require('../controllers/productController');
 
 // API for adding product
@@ -13,6 +14,9 @@ router.post('/addproduct', addProduct);
 
 // API for removing product
 router.post('/removeproduct', removeProduct);
+
+// API for updating product
+router.post('/updateproduct', updateProduct);
 
 // API for getting all products
 router.get('/allproducts', getAllProducts);

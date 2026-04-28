@@ -1,16 +1,27 @@
 const Order = require('../models/Order');
 const User = require('../models/User');
+const Product = require('../models/Product');
 
 // POST /orders/placeorder
 const placeOrder = async (req, res) => {
     try {
         console.log("Order placement attempt from user:", req.user.id);
         const { products, totalAmount } = req.body;
-        console.log("Products in order:", JSON.stringify(products, null, 2));
+        
+        // Enrich products with name and image for historical tracking
+        const enrichedProducts = await Promise.all(products.map(async (item) => {
+            const productInfo = await Product.findOne({ id: item.productId });
+            return {
+                ...item,
+                name: productInfo ? productInfo.name : "Unknown Item",
+                image: productInfo ? productInfo.image : "",
+                pricePerDay: productInfo ? (productInfo.pricePerDay || productInfo.new_price) : 0
+            };
+        }));
 
         const order = new Order({
             userId: req.user.id,
-            products: products,
+            products: enrichedProducts,
             totalAmount: totalAmount,
             paymentStatus: "Pending",
             orderStatus: "Booked"
@@ -27,7 +38,7 @@ const placeOrder = async (req, res) => {
             orderId: order._id
         });
     } catch (error) {
-        console.error(error);
+        console.error("Place Order Error:", error);
         res.status(500).json({ success: false, message: "Error placing order" });
     }
 };
@@ -56,9 +67,28 @@ const allOrders = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
     try {
         const { orderId, status } = req.body;
+        const oldOrder = await Order.findById(orderId);
+        const oldStatus = oldOrder.orderStatus;
+
         await Order.findByIdAndUpdate(orderId, { orderStatus: status });
-        res.json({ success: true, message: "Order status updated" });
+
+        // If transitioning TO Rented - Decrease Stock
+        if (status === "Rented" && oldStatus !== "Rented") {
+            for (let item of oldOrder.products) {
+                await Product.findOneAndUpdate({ id: item.productId }, { $inc: { stock: -item.quantity } });
+            }
+        }
+
+        // If transitioning FROM Rented to Returned/Cancelled - Increase Stock
+        if (oldStatus === "Rented" && (status === "Returned" || status === "Cancelled")) {
+            for (let item of oldOrder.products) {
+                await Product.findOneAndUpdate({ id: item.productId }, { $inc: { stock: item.quantity } });
+            }
+        }
+
+        res.json({ success: true, message: "Order status updated and inventory adjusted" });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, message: "Error updating status" });
     }
 };
