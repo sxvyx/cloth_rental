@@ -47,35 +47,38 @@ const ManageOrders = () => {
                     <p>Action</p>
                 </div>
                 <hr />
-                {allOrders.map((order, index) => {
+                {allOrders.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '50px', color: '#888' }}>
+                        <p>No rental bookings found.</p>
+                    </div>
+                ) : allOrders.map((order, index) => {
                     return (
-                        <div key={index}>
-                            <div className="orders-format-main orders-format">
-                                <p>{order._id.slice(-6)}</p>
-                                <p>{order.userId?.name || 'Guest'}<br/>{order.userId?.email}</p>
-                                <div className="order-products-list">
-                                    {order.products.map((p, i) => (
-                                        <p key={i}>{p.name} ({p.quantity})</p>
-                                    ))}
-                                </div>
-                                <p>Rs. {order.totalAmount}</p>
-                                <p className={`status-${order.orderStatus.toLowerCase().replace(/ /g, '-')}`}>
-                                    {order.orderStatus}
-                                </p>
-                                <div className="order-actions">
-                                    <select 
-                                        value={order.orderStatus} 
-                                        onChange={(e) => updateStatus(order._id, e.target.value)}
-                                    >
-                                        <option value="Booked">Booked</option>
-                                        <option value="Out for Delivery">Out for Delivery</option>
-                                        <option value="Rented">Rented</option>
-                                        <option value="Returned">Returned</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                    </select>
-                                </div>
+                        <div key={index} className="orders-format-main orders-format">
+                            <p>#{order._id.slice(-6).toUpperCase()}</p>
+                            <p>{order.userId?.name || 'Guest'}<br/><span style={{fontSize: '11px', color: '#888'}}>{order.userId?.email}</span></p>
+                            <div className="order-products-list">
+                                {order.products.map((p, i) => (
+                                    <p key={i} style={{fontSize: '12px'}}>{p.name} x{p.quantity}</p>
+                                ))}
                             </div>
-                            <hr />
+                            <p>Rs. {order.totalAmount}</p>
+                            <p>
+                                <span className={`status-badge status-${order.orderStatus.toLowerCase().replace(/ /g, '-')}`}>
+                                    {order.orderStatus}
+                                </span>
+                            </p>
+                            <div className="order-actions">
+                                <select 
+                                    value={order.orderStatus} 
+                                    onChange={(e) => updateStatus(order._id, e.target.value)}
+                                >
+                                    <option value="Booked">Booked</option>
+                                    <option value="Out for Delivery">Out for Delivery</option>
+                                    <option value="Rented">Rented</option>
+                                    <option value="Returned">Returned</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </div>
                         </div>
                     )
                 })}

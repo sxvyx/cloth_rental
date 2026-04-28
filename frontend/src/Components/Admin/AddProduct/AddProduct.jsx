@@ -13,7 +13,8 @@ const AddProduct = () => {
         category:"women",
         sizes: ["S", "M", "L", "XL", "XXL"],
         new_price: "",
-        old_price:""
+        old_price:"",
+        stock: 1
     })
 
     const imageHandler = (e)=>{
@@ -59,7 +60,10 @@ const AddProduct = () => {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(product),
+                body: JSON.stringify({
+                    ...product,
+                    stock: Number(product.stock)
+                }),
             }).then((resp)=>resp.json()).then((data)=>{
                 data.success?alert("Product added"):alert("Failed")
             })
@@ -70,50 +74,50 @@ const AddProduct = () => {
     <div className='add-product'>
         <div className="addproduct-itemfield">
             <p>Product Title</p>
-            <input value={productDetails.name} onChange={changeHandler} type="text" name="name" placeholder='Type here' />
+            <input value={productDetails.name} onChange={changeHandler} type="text" name="name" placeholder='Enter product name' />
         </div>
 
         <div className="addproduct-itemfield">
             <p>Product Description</p>
-            <textarea value={productDetails.description} onChange={changeHandler} name="description" placeholder='Write a short description about this cloth...' rows="3" style={{width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', fontFamily: 'inherit', resize: 'vertical'}} />
+            <textarea value={productDetails.description} onChange={changeHandler} name="description" placeholder='Describe the product features and details...' rows="4" />
         </div>
 
         <div className="addproduct-price">
             <div className="addproduct-itemfield">
-                <p>Price</p>
-                <input value={productDetails.old_price} onChange={changeHandler} type="text" name="old_price" placeholder='Type here' />
+                <p>Standard Price (Rs.)</p>
+                <input value={productDetails.old_price} onChange={changeHandler} type="text" name="old_price" placeholder='Original price' />
             </div>
             
             <div className="addproduct-itemfield">
-                <p>Offer Price</p>
-                <input value={productDetails.new_price} onChange={changeHandler} type="text" name="new_price" placeholder='Type here' />
+                <p>Rental Price per Day (Rs.)</p>
+                <input value={productDetails.new_price} onChange={changeHandler} type="text" name="new_price" placeholder='Daily rental rate' />
             </div>
         </div>
 
-        <div className="addproduct-itemfield">
-            <p>Product Category</p>
-            <select value={productDetails.category} onChange={changeHandler} name="category" className='add-product-selector'>
-                <option value="women">Women</option>
-                <option value="men">Men</option>
-                <option value="kids">Kids</option>
-            </select>
+        <div className="addproduct-price">
+            <div className="addproduct-itemfield">
+                <p>Product Category</p>
+                <select value={productDetails.category} onChange={changeHandler} name="category" className='add-product-selector'>
+                    <option value="women">Women</option>
+                    <option value="men">Men</option>
+                    <option value="kids">Kids</option>
+                </select>
+            </div>
+
+            <div className="addproduct-itemfield">
+                <p>Initial Stock</p>
+                <input value={productDetails.stock} onChange={changeHandler} type="number" name="stock" placeholder='Quantity' />
+            </div>
         </div>
 
         <div className="addproduct-itemfield">
             <p>Available Sizes</p>
-            <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
+            <div className="size-container" style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                 {["S", "M", "L", "XL", "XXL"].map((size) => (
                     <div
                         key={size}
                         onClick={() => sizeHandler(size)}
-                        style={{
-                            padding: '8px 16px',
-                            border: productDetails.sizes.includes(size) ? '2px solid #ff4141' : '1px solid #ccc',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            backgroundColor: productDetails.sizes.includes(size) ? '#fff0f0' : '#fff',
-                            fontWeight: productDetails.sizes.includes(size) ? 'bold' : 'normal'
-                        }}
+                        className={`size-box ${productDetails.sizes.includes(size) ? 'selected' : ''}`}
                     >
                         {size}
                     </div>
@@ -122,12 +126,14 @@ const AddProduct = () => {
         </div>
 
         <div className="addproduct-itemfield">
+            <p>Product Thumbnail</p>
             <label htmlFor="file-input">
-                <img src={image?URL.createObjectURL(image):upload_area} className = 'addproduct-thumbnail-img' alt="" />
+                <img src={image?URL.createObjectURL(image):upload_area} className = 'addproduct-thumbnail-img' alt="Upload Area" />
             </label>
             <input onChange={imageHandler} type="file" name='image' id='file-input' hidden/>
         </div>
-        <button onClick={()=>{Add_Product()}}className='addproduct-btn'>Add</button>
+        
+        <button onClick={()=>{Add_Product()}} className='addproduct-btn'>Publish Product</button>
     </div>
   )
 }

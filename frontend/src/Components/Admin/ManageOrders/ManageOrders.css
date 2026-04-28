@@ -1,53 +1,83 @@
 .manage-orders {
-    padding: 30px 50px;
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    max-width: 1200px;
+    padding: 40px;
+    margin: 20px auto;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
 .manage-orders h1 {
-    font-size: 30px;
-    font-weight: 600;
-}
-
-.orders-container {
-    margin-top: 30px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .orders-format-main {
     display: grid;
-    grid-template-columns: 1fr 2fr 2fr 1fr 1fr 1fr;
-    align-items: center;
-    gap: 10px;
-    padding: 20px 0px;
-    color: #454545;
-    font-size: 15px;
-    font-weight: 600;
+    grid-template-columns: 0.8fr 2.5fr 2fr 1fr 1fr 1.2fr;
+    gap: 15px;
+    width: 100%;
+    padding: 15px 10px;
+    color: #888;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #f9f9f9;
 }
 
 .orders-format {
-    font-weight: 400;
+    align-items: center;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+    padding: 20px 10px;
+    border-bottom: 1px solid #f2f2f2;
+    transition: background 0.3s ease;
 }
 
-.order-products-list p {
-    margin: 0;
-    font-size: 13px;
-    color: #555;
+.orders-format:hover {
+    background: #fcfcfc;
 }
 
-.status-booked { color: #f39c12; }
-.status-rented { color: #3498db; }
-.status-returned { color: #2ecc71; }
-.status-out-for-delivery { color: #9b59b6; }
-.status-cancelled { color: #e74c3c; }
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-booked { background: #fff7ed; color: #c2410c; }
+.status-rented { background: #eff6ff; color: #1d4ed8; }
+.status-returned { background: #f0fdf4; color: #15803d; }
+.status-cancelled { background: #fef2f2; color: #b91c1c; }
 
 .order-actions select {
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #e5e5e5;
+    background: #fafafa;
+    font-size: 13px;
+    outline: none;
     cursor: pointer;
+    transition: border 0.3s;
 }
 
-@media (max-width: 800px) {
+.order-actions select:focus {
+    border-color: #9e1b20;
+}
+
+@media (max-width: 1024px) {
     .orders-format-main {
+        font-size: 11px;
         grid-template-columns: 1fr 1fr 1fr;
     }
 }
