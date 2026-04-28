@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import './App.css';
 import Navbar from './Components/Navbar/Navbar';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -11,6 +12,7 @@ import Footer from './Components/Footer/Footer';
 import men_banner from './Components/Assets/banner_mens.png';
 import women_banner from './Components/Assets/banner_women.png';
 import kid_banner from './Components/Assets/banner_kids.png';
+import HowToRent from './Pages/HowToRent';
 
 // Correct imports for User Dashboard components
 import UserDashboard from './Components/UserDashboard/UserDashboard'; 
@@ -23,8 +25,23 @@ import Admin from './Pages/Admin/Admin';
 import ProtectedRoute from './Components/ProtectedRoute';
 
 function App() {
+  useEffect(() => {
+    // Dynamically inject app.min.js after React has mounted the components
+    const script = document.createElement('script');
+    script.src = "/js/app.min.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script when component unmounts if necessary
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
+
   return (
-    <div>
+    <div className="wrapper">
       <BrowserRouter>
         <Navbar />
         <Routes>
@@ -43,6 +60,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<LoginSignup />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/how-to-rent" element={<HowToRent />} />
           
           {/* User Dashboard Routes */}
           <Route path="/dashboard" element={<UserDashboard />}>

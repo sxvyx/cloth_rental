@@ -1,17 +1,230 @@
-*{
+/* Base Styles */
+* {
   margin: 0;
-}
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-family: poppins;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #fff;
+  color: #1a1a1a;
 }
+
+/* Header Block Styles (Titles) */
+.header-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-block__title {
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+}
+
+/* Grid Layouts */
+.feature-product__cards.card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+  width: 100%;
+}
+
+/* Item Card Styles */
+.card__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  transition: z-index 0.3s;
+}
+
+.card__body:hover {
+  z-index: 10;
+}
+
+.card__image {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding-bottom: 150%; /* Aspect ratio */
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  transition: clip-path 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.card__image._watcher-view {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.card__image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card__body:hover .card__image img {
+  transform: scale(1.05);
+}
+
+/* Hover Buttons */
+.shop-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  z-index: 10;
+}
+
+.card__body:hover .shop-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.shop-btn__row {
+  display: flex;
+  align-items: stretch; /* Ensure all buttons fill the row height */
+  width: 100%;
+  background: #fff;
+  border: 1px solid #f2f2f2;
+}
+
+.product-btn {
+  flex: 1;
+  height: 54px;
+  background: #fff;
+  border: none;
+  border-right: 1px solid #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #555;
+  padding: 0;
+  margin: 0;
+}
+
+.product-btn:last-child {
+  border-right: none;
+}
+
+.product-btn:hover {
+  background: #9e1b20;
+  color: #fff;
+}
+
+.shop-btn__like {
+  flex: 0 0 54px;
+  width: 54px;
+  position: relative;
+  display: block; /* Disable flex for absolute centering */
+}
+
+.shop-btn__like img {
+  position: absolute;
+  width: 18px !important;
+  height: 16px !important;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.shop-btn__like:hover img {
+  filter: brightness(0) invert(1);
+}
+
+/* Card Bottom */
+.card__bottom-items {
+  padding-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card__lable {
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.card__price {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #9e1b20;
+}
+
+/* Animations Trigger */
+._watcher-view {
+  /* Handled in individual components */
+}
+
+/* Responsive */
+/* Logout Button Styling */
+.logout-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  margin-left: 15px;
+  backdrop-filter: blur(5px);
+}
+
+.logout-btn:hover {
+  background: white;
+  color: #9e1b20;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Centering the Navbar Menu */
+.header__logo, .header__actions {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.header__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header__logo {
+  display: flex;
+  align-items: center;
+}
+
+.header__menu {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
