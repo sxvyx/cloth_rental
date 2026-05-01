@@ -132,8 +132,14 @@ const CartItems = () => {
                 return;
             }
 
+            const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+            if (!razorpayKey) {
+                setPaymentError("Razorpay Key ID is missing. Please check environment variables.");
+                return;
+            }
+
             const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
+                key: razorpayKey, 
                 amount: rzpOrderData.amount,
                 currency: rzpOrderData.currency,
                 name: "Rentie",
