@@ -2,33 +2,38 @@ const Product = require('../models/Product');
 
 // POST /products/addproduct
 const addProduct = async (req, res) => {
-    let products = await Product.find({});
-    let id;
-    if (products.length > 0) {
-        let last_product_array = products.slice(-1);
-        let last_product = last_product_array[0];
-        id = last_product.id + 1;
-    } else {
-        id = 1;
+    try {
+        let products = await Product.find({});
+        let id;
+        if (products.length > 0) {
+            let last_product_array = products.slice(-1);
+            let last_product = last_product_array[0];
+            id = last_product.id + 1;
+        } else {
+            id = 1;
+        }
+        const product = new Product({
+            id: id,
+            name: req.body.name,
+            image: req.body.image,
+            category: req.body.category,
+            new_price: req.body.new_price,
+            old_price: req.body.old_price,
+            pricePerDay: req.body.pricePerDay || 0,
+            stock: req.body.stock || 1,
+            description: req.body.description || "",
+        });
+        console.log(product);
+        await product.save();
+        console.log("Saved");
+        res.json({
+            success: true,
+            name: req.body.name,
+        });
+    } catch (error) {
+        console.error("Error adding product:", error);
+        res.status(500).json({ success: false, message: "Error adding product", error: error.message });
     }
-    const product = new Product({
-        id: id,
-        name: req.body.name,
-        image: req.body.image,
-        category: req.body.category,
-        new_price: req.body.new_price,
-        old_price: req.body.old_price,
-        pricePerDay: req.body.pricePerDay || 0,
-        stock: req.body.stock || 1,
-        description: req.body.description || "",
-    });
-    console.log(product);
-    await product.save();
-    console.log("Saved");
-    res.json({
-        success: true,
-        name: req.body.name,
-    });
 };
 
 // POST /products/removeproduct

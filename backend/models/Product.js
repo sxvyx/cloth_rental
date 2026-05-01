@@ -27,11 +27,9 @@ const ProductSchema = new mongoose.Schema({
     },
     new_price: {
         type: Number,
-        required: true,
     },
     old_price: {
         type: Number,
-        required: true,
     },
     pricePerDay: {
         type: Number,

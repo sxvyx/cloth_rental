@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './ManageUsers.css';
+import API_URL from '../../../config';
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
 
     const fetchUsers = async () => {
-        await fetch('http://localhost:4000/users/allusers')
+        await fetch(`${API_URL}/users/allusers`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.success) {

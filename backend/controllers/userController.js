@@ -47,6 +47,7 @@ const login = async (req, res) => {
             const token = jwt.sign({ user: { id: user.id } }, process.env.JWT_SECRET || 'secret_ecom');
             return res.json({ success: true, token, role: user.role });
         }
+    
     }
 
     let user = await User.findOne({ email: req.body.email });
