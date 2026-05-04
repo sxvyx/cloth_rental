@@ -1,4 +1,4 @@
-# 🧵 Cloth Rental E-Commerce System
+# Rentie - Cloth Rental Platform - MERN
 
 <p align="center">
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" width="50" height="50" />
@@ -12,6 +12,11 @@
 
 ## 🌟 Overview
 A premium **MERN Stack** e-commerce application designed for **Cloth Renting**. This platform allows users to browse an exclusive collection of apparel, select specific rental dates, and manage their bookings with ease. It features a robust admin dashboard for inventory control and order tracking.
+- Frontend(Vercel):
+https://rentie-frontend.vercel.app/
+
+- Backend(Render):
+https://rentie-backend.onrender.com
 
 ---
 
@@ -89,19 +94,11 @@ npm start
 
 ---
 
-## 🛡️ Role-Based Access Control (RBAC)
+### 🛡️ Role-Based Access Control (RBAC)
 The application uses a unified login system. 
 - **Users:** Can browse items, rent clothes, and view their order history.
 - **Admins:** Can add/remove products and manage all rental bookings. Admin access is restricted to users with the `admin` role in MongoDB.
 
-
----
-
-## 🎬 Project Deliverables
-
-### 📺 Video Walkthroughs
-*   [**Code Explanation Video**](LINK_TO_BE_ADDED)
-*   [**Project Overview Video**](LINK_TO_BE_ADDED)
 
 ### 📊 Documentation
 *   Detailed project report and diagrams can be found in the `/backend/docs` folder.
